@@ -1,0 +1,127 @@
+Warning: you requested the nanomsg event logger, but bmv2 was compiled without -DBMELOG, and the event logger cannot be activated
+Calling target program-options parser
+[21:28:24.245] [bmv2] [D] [thread 4378] Set default default entry for table 'MyIngress.dmac': NoAction - 
+Adding interface s1-eth1 as port 1
+[21:28:24.248] [bmv2] [D] [thread 4378] Adding interface s1-eth1 as port 1
+Adding interface s1-eth2 as port 2
+[21:28:24.296] [bmv2] [D] [thread 4378] Adding interface s1-eth2 as port 2
+Adding interface s1-eth3 as port 3
+[21:28:24.331] [bmv2] [D] [thread 4378] Adding interface s1-eth3 as port 3
+Adding interface s1-eth4 as port 4
+[21:28:24.379] [bmv2] [D] [thread 4378] Adding interface s1-eth4 as port 4
+[21:28:24.446] [bmv2] [I] [thread 4378] Starting Thrift server on port 9090
+[21:28:24.447] [bmv2] [I] [thread 4378] Thrift server was started
+[21:28:24.452] [bmv2] [D] [thread 4384] [0.0] [cxt 0] Processing packet received on port 2
+[21:28:24.452] [bmv2] [D] [thread 4384] [0.0] [cxt 0] Parser 'parser': start
+[21:28:24.452] [bmv2] [D] [thread 4384] [0.0] [cxt 0] Parser 'parser' entering state 'start'
+[21:28:24.452] [bmv2] [D] [thread 4384] [0.0] [cxt 0] Extracting header 'ethernet'
+[21:28:24.452] [bmv2] [D] [thread 4384] [0.0] [cxt 0] Parser state 'start' has no switch, going to default next state
+[21:28:24.453] [bmv2] [T] [thread 4384] [0.0] [cxt 0] Bytes parsed: 14
+[21:28:24.453] [bmv2] [D] [thread 4384] [0.0] [cxt 0] Parser 'parser': end
+[21:28:24.453] [bmv2] [D] [thread 4384] [0.0] [cxt 0] Pipeline 'ingress': start
+[21:28:24.453] [bmv2] [T] [thread 4384] [0.0] [cxt 0] Applying table 'MyIngress.dmac'
+[21:28:24.453] [bmv2] [D] [thread 4384] [0.0] [cxt 0] Looking up key:
+* hdr.ethernet.dstAddr: 333300000016
+
+[21:28:24.453] [bmv2] [D] [thread 4384] [0.0] [cxt 0] Table 'MyIngress.dmac': miss
+[21:28:24.453] [bmv2] [D] [thread 4384] [0.0] [cxt 0] Action entry is NoAction - 
+[21:28:24.454] [bmv2] [T] [thread 4384] [0.0] [cxt 0] Action NoAction
+[21:28:24.454] [bmv2] [D] [thread 4384] [0.0] [cxt 0] Pipeline 'ingress': end
+[21:28:24.454] [bmv2] [D] [thread 4384] [0.0] [cxt 0] Egress port is 0
+[21:28:24.454] [bmv2] [D] [thread 4385] [0.0] [cxt 0] Pipeline 'egress': start
+[21:28:24.455] [bmv2] [D] [thread 4385] [0.0] [cxt 0] Pipeline 'egress': end
+[21:28:24.455] [bmv2] [D] [thread 4385] [0.0] [cxt 0] Deparser 'deparser': start
+[21:28:24.456] [bmv2] [D] [thread 4385] [0.0] [cxt 0] Deparsing header 'ethernet'
+[21:28:24.456] [bmv2] [D] [thread 4385] [0.0] [cxt 0] Deparser 'deparser': end
+[21:28:24.457] [bmv2] [D] [thread 4389] [0.0] [cxt 0] Transmitting packet of size 90 out of port 0
+[21:28:25.528] [bmv2] [T] [thread 4454] bm_get_config
+[21:28:25.530] [bmv2] [T] [thread 4454] bm_mt_get_entries
+[21:28:25.533] [bmv2] [T] [thread 4454] bm_reset_state
+[21:28:25.534] [bmv2] [D] [thread 4454] Resetting simple_switch target-specific state
+[21:28:25.535] [bmv2] [D] [thread 4454] resetting PRE state
+[21:28:25.539] [bmv2] [T] [thread 4454] bm_table_add_entry
+[21:28:25.539] [bmv2] [D] [thread 4454] Entry 0 added to table 'MyIngress.dmac'
+[21:28:25.540] [bmv2] [D] [thread 4454] Dumping entry 0
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000001
+Action entry: MyIngress.forward - 1,
+
+[21:28:25.541] [bmv2] [T] [thread 4454] bm_table_add_entry
+[21:28:25.542] [bmv2] [D] [thread 4454] Entry 1 added to table 'MyIngress.dmac'
+[21:28:25.542] [bmv2] [D] [thread 4454] Dumping entry 1
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000002
+Action entry: MyIngress.forward - 2,
+
+[21:28:25.544] [bmv2] [T] [thread 4454] bm_table_add_entry
+[21:28:25.544] [bmv2] [D] [thread 4454] Entry 2 added to table 'MyIngress.dmac'
+[21:28:25.544] [bmv2] [D] [thread 4454] Dumping entry 2
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000003
+Action entry: MyIngress.forward - 3,
+
+[21:28:25.546] [bmv2] [T] [thread 4454] bm_table_add_entry
+[21:28:25.547] [bmv2] [D] [thread 4454] Entry 3 added to table 'MyIngress.dmac'
+[21:28:25.547] [bmv2] [D] [thread 4454] Dumping entry 3
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000004
+Action entry: MyIngress.forward - 4,
+
+[21:30:42.258] [bmv2] [D] [thread 4384] [1.0] [cxt 0] Processing packet received on port 1
+[21:30:42.258] [bmv2] [D] [thread 4384] [1.0] [cxt 0] Parser 'parser': start
+[21:30:42.259] [bmv2] [D] [thread 4384] [1.0] [cxt 0] Parser 'parser' entering state 'start'
+[21:30:42.261] [bmv2] [D] [thread 4384] [1.0] [cxt 0] Extracting header 'ethernet'
+[21:30:42.261] [bmv2] [D] [thread 4384] [1.0] [cxt 0] Parser state 'start' has no switch, going to default next state
+[21:30:42.261] [bmv2] [T] [thread 4384] [1.0] [cxt 0] Bytes parsed: 14
+[21:30:42.262] [bmv2] [D] [thread 4384] [1.0] [cxt 0] Parser 'parser': end
+[21:30:42.263] [bmv2] [D] [thread 4384] [1.0] [cxt 0] Pipeline 'ingress': start
+[21:30:42.264] [bmv2] [T] [thread 4384] [1.0] [cxt 0] Applying table 'MyIngress.dmac'
+[21:30:42.265] [bmv2] [D] [thread 4384] [1.0] [cxt 0] Looking up key:
+* hdr.ethernet.dstAddr: 00000a000002
+
+[21:30:42.265] [bmv2] [D] [thread 4384] [1.0] [cxt 0] Table 'MyIngress.dmac': hit with handle 1
+[21:30:42.265] [bmv2] [D] [thread 4384] [1.0] [cxt 0] Dumping entry 1
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000002
+Action entry: MyIngress.forward - 2,
+
+[21:30:42.266] [bmv2] [D] [thread 4384] [1.0] [cxt 0] Action entry is MyIngress.forward - 2,
+[21:30:42.266] [bmv2] [T] [thread 4384] [1.0] [cxt 0] Action MyIngress.forward
+[21:30:42.267] [bmv2] [T] [thread 4384] [1.0] [cxt 0] /media/sf_CMPT471/Projects/Project5/simple-switch/program1/p4src/program.p4(66) Primitive standard_metadata.egress_spec = egress_port
+[21:30:42.267] [bmv2] [D] [thread 4384] [1.0] [cxt 0] Pipeline 'ingress': end
+[21:30:42.268] [bmv2] [D] [thread 4384] [1.0] [cxt 0] Egress port is 2
+[21:30:42.268] [bmv2] [D] [thread 4387] [1.0] [cxt 0] Pipeline 'egress': start
+[21:30:42.269] [bmv2] [D] [thread 4387] [1.0] [cxt 0] Pipeline 'egress': end
+[21:30:42.269] [bmv2] [D] [thread 4387] [1.0] [cxt 0] Deparser 'deparser': start
+[21:30:42.269] [bmv2] [D] [thread 4387] [1.0] [cxt 0] Deparsing header 'ethernet'
+[21:30:42.269] [bmv2] [D] [thread 4387] [1.0] [cxt 0] Deparser 'deparser': end
+[21:30:42.270] [bmv2] [D] [thread 4389] [1.0] [cxt 0] Transmitting packet of size 98 out of port 2
+[21:30:42.270] [bmv2] [D] [thread 4384] [2.0] [cxt 0] Processing packet received on port 2
+[21:30:42.271] [bmv2] [D] [thread 4384] [2.0] [cxt 0] Parser 'parser': start
+[21:30:42.271] [bmv2] [D] [thread 4384] [2.0] [cxt 0] Parser 'parser' entering state 'start'
+[21:30:42.272] [bmv2] [D] [thread 4384] [2.0] [cxt 0] Extracting header 'ethernet'
+[21:30:42.272] [bmv2] [D] [thread 4384] [2.0] [cxt 0] Parser state 'start' has no switch, going to default next state
+[21:30:42.273] [bmv2] [T] [thread 4384] [2.0] [cxt 0] Bytes parsed: 14
+[21:30:42.273] [bmv2] [D] [thread 4384] [2.0] [cxt 0] Parser 'parser': end
+[21:30:42.273] [bmv2] [D] [thread 4384] [2.0] [cxt 0] Pipeline 'ingress': start
+[21:30:42.274] [bmv2] [T] [thread 4384] [2.0] [cxt 0] Applying table 'MyIngress.dmac'
+[21:30:42.274] [bmv2] [D] [thread 4384] [2.0] [cxt 0] Looking up key:
+* hdr.ethernet.dstAddr: 00000a000001
+
+[21:30:42.274] [bmv2] [D] [thread 4384] [2.0] [cxt 0] Table 'MyIngress.dmac': hit with handle 0
+[21:30:42.275] [bmv2] [D] [thread 4384] [2.0] [cxt 0] Dumping entry 0
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000001
+Action entry: MyIngress.forward - 1,
+
+[21:30:42.275] [bmv2] [D] [thread 4384] [2.0] [cxt 0] Action entry is MyIngress.forward - 1,
+[21:30:42.275] [bmv2] [T] [thread 4384] [2.0] [cxt 0] Action MyIngress.forward
+[21:30:42.276] [bmv2] [T] [thread 4384] [2.0] [cxt 0] /media/sf_CMPT471/Projects/Project5/simple-switch/program1/p4src/program.p4(66) Primitive standard_metadata.egress_spec = egress_port
+[21:30:42.276] [bmv2] [D] [thread 4384] [2.0] [cxt 0] Pipeline 'ingress': end
+[21:30:42.276] [bmv2] [D] [thread 4384] [2.0] [cxt 0] Egress port is 1
+[21:30:42.277] [bmv2] [D] [thread 4386] [2.0] [cxt 0] Pipeline 'egress': start
+[21:30:42.277] [bmv2] [D] [thread 4386] [2.0] [cxt 0] Pipeline 'egress': end
+[21:30:42.277] [bmv2] [D] [thread 4386] [2.0] [cxt 0] Deparser 'deparser': start
+[21:30:42.278] [bmv2] [D] [thread 4386] [2.0] [cxt 0] Deparsing header 'ethernet'
+[21:30:42.278] [bmv2] [D] [thread 4386] [2.0] [cxt 0] Deparser 'deparser': end
+[21:30:42.278] [bmv2] [D] [thread 4389] [2.0] [cxt 0] Transmitting packet of size 98 out of port 1
