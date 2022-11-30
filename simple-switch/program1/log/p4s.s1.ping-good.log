@@ -1,0 +1,135 @@
+Warning: you requested the nanomsg event logger, but bmv2 was compiled without -DBMELOG, and the event logger cannot be activated
+Calling target program-options parser
+[22:02:43.047] [bmv2] [D] [thread 10095] Set default default entry for table 'MyIngress.dmac': NoAction - 
+Adding interface s1-eth1 as port 1
+[22:02:43.052] [bmv2] [D] [thread 10095] Adding interface s1-eth1 as port 1
+Adding interface s1-eth2 as port 2
+[22:02:43.095] [bmv2] [D] [thread 10095] Adding interface s1-eth2 as port 2
+Adding interface s1-eth3 as port 3
+[22:02:43.145] [bmv2] [D] [thread 10095] Adding interface s1-eth3 as port 3
+Adding interface s1-eth4 as port 4
+[22:02:43.190] [bmv2] [D] [thread 10095] Adding interface s1-eth4 as port 4
+[22:02:43.223] [bmv2] [I] [thread 10095] Starting Thrift server on port 9090
+[22:02:43.224] [bmv2] [I] [thread 10095] Thrift server was started
+[22:02:43.611] [bmv2] [T] [thread 10146] bm_get_config
+[22:02:43.615] [bmv2] [T] [thread 10146] bm_table_add_entry
+[22:02:43.617] [bmv2] [D] [thread 10146] Entry 0 added to table 'MyIngress.dmac'
+[22:02:43.618] [bmv2] [D] [thread 10146] Dumping entry 0
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000001
+Action entry: MyIngress.forward - 1,
+
+[22:02:43.619] [bmv2] [T] [thread 10146] bm_table_add_entry
+[22:02:43.619] [bmv2] [D] [thread 10146] Entry 1 added to table 'MyIngress.dmac'
+[22:02:43.619] [bmv2] [D] [thread 10146] Dumping entry 1
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000002
+Action entry: MyIngress.forward - 2,
+
+[22:02:43.621] [bmv2] [T] [thread 10146] bm_table_add_entry
+[22:02:43.622] [bmv2] [D] [thread 10146] Entry 2 added to table 'MyIngress.dmac'
+[22:02:43.622] [bmv2] [D] [thread 10146] Dumping entry 2
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000003
+Action entry: MyIngress.forward - 3,
+
+[22:02:43.623] [bmv2] [T] [thread 10146] bm_table_add_entry
+[22:02:43.623] [bmv2] [D] [thread 10146] Entry 3 added to table 'MyIngress.dmac'
+[22:02:43.624] [bmv2] [D] [thread 10146] Dumping entry 3
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000004
+Action entry: MyIngress.forward - 4,
+
+[22:02:44.282] [bmv2] [T] [thread 10162] bm_get_config
+[22:02:44.283] [bmv2] [T] [thread 10162] bm_mt_get_entries
+[22:02:44.285] [bmv2] [T] [thread 10162] bm_reset_state
+[22:02:44.286] [bmv2] [D] [thread 10162] Resetting simple_switch target-specific state
+[22:02:44.286] [bmv2] [D] [thread 10162] resetting PRE state
+[22:02:44.287] [bmv2] [T] [thread 10162] bm_table_add_entry
+[22:02:44.288] [bmv2] [D] [thread 10162] Entry 0 added to table 'MyIngress.dmac'
+[22:02:44.288] [bmv2] [D] [thread 10162] Dumping entry 0
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000001
+Action entry: MyIngress.forward - 1,
+
+[22:02:44.290] [bmv2] [T] [thread 10162] bm_table_add_entry
+[22:02:44.290] [bmv2] [D] [thread 10162] Entry 1 added to table 'MyIngress.dmac'
+[22:02:44.290] [bmv2] [D] [thread 10162] Dumping entry 1
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000002
+Action entry: MyIngress.forward - 2,
+
+[22:02:44.291] [bmv2] [T] [thread 10162] bm_table_add_entry
+[22:02:44.292] [bmv2] [D] [thread 10162] Entry 2 added to table 'MyIngress.dmac'
+[22:02:44.292] [bmv2] [D] [thread 10162] Dumping entry 2
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000003
+Action entry: MyIngress.forward - 3,
+
+[22:02:44.293] [bmv2] [T] [thread 10162] bm_table_add_entry
+[22:02:44.294] [bmv2] [D] [thread 10162] Entry 3 added to table 'MyIngress.dmac'
+[22:02:44.294] [bmv2] [D] [thread 10162] Dumping entry 3
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000004
+Action entry: MyIngress.forward - 4,
+
+[22:02:44.295] [bmv2] [T] [thread 10162] bm_mt_get_entries
+[22:02:44.302] [bmv2] [T] [thread 10162] bm_mt_get_default_entry
+[22:03:15.540] [bmv2] [D] [thread 10101] [0.0] [cxt 0] Processing packet received on port 1
+[22:03:15.541] [bmv2] [D] [thread 10101] [0.0] [cxt 0] Parser 'parser': start
+[22:03:15.541] [bmv2] [D] [thread 10101] [0.0] [cxt 0] Parser 'parser' entering state 'start'
+[22:03:15.541] [bmv2] [D] [thread 10101] [0.0] [cxt 0] Extracting header 'ethernet'
+[22:03:15.544] [bmv2] [D] [thread 10101] [0.0] [cxt 0] Parser state 'start' has no switch, going to default next state
+[22:03:15.544] [bmv2] [T] [thread 10101] [0.0] [cxt 0] Bytes parsed: 14
+[22:03:15.545] [bmv2] [D] [thread 10101] [0.0] [cxt 0] Parser 'parser': end
+[22:03:15.545] [bmv2] [D] [thread 10101] [0.0] [cxt 0] Pipeline 'ingress': start
+[22:03:15.545] [bmv2] [T] [thread 10101] [0.0] [cxt 0] Applying table 'MyIngress.dmac'
+[22:03:15.545] [bmv2] [D] [thread 10101] [0.0] [cxt 0] Looking up key:
+* hdr.ethernet.dstAddr: 00000a000002
+
+[22:03:15.547] [bmv2] [D] [thread 10101] [0.0] [cxt 0] Table 'MyIngress.dmac': hit with handle 1
+[22:03:15.548] [bmv2] [D] [thread 10101] [0.0] [cxt 0] Dumping entry 1
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000002
+Action entry: MyIngress.forward - 2,
+
+[22:03:15.548] [bmv2] [D] [thread 10101] [0.0] [cxt 0] Action entry is MyIngress.forward - 2,
+[22:03:15.549] [bmv2] [T] [thread 10101] [0.0] [cxt 0] Action MyIngress.forward
+[22:03:15.550] [bmv2] [T] [thread 10101] [0.0] [cxt 0] /media/sf_CMPT471/Projects/Project5/simple-switch/program1/p4src/program.p4(66) Primitive standard_metadata.egress_spec = egress_port
+[22:03:15.550] [bmv2] [D] [thread 10101] [0.0] [cxt 0] Pipeline 'ingress': end
+[22:03:15.550] [bmv2] [D] [thread 10101] [0.0] [cxt 0] Egress port is 2
+[22:03:15.551] [bmv2] [D] [thread 10104] [0.0] [cxt 0] Pipeline 'egress': start
+[22:03:15.551] [bmv2] [D] [thread 10104] [0.0] [cxt 0] Pipeline 'egress': end
+[22:03:15.551] [bmv2] [D] [thread 10104] [0.0] [cxt 0] Deparser 'deparser': start
+[22:03:15.551] [bmv2] [D] [thread 10104] [0.0] [cxt 0] Deparsing header 'ethernet'
+[22:03:15.552] [bmv2] [D] [thread 10104] [0.0] [cxt 0] Deparser 'deparser': end
+[22:03:15.552] [bmv2] [D] [thread 10106] [0.0] [cxt 0] Transmitting packet of size 98 out of port 2
+[22:03:15.553] [bmv2] [D] [thread 10101] [1.0] [cxt 0] Processing packet received on port 2
+[22:03:15.553] [bmv2] [D] [thread 10101] [1.0] [cxt 0] Parser 'parser': start
+[22:03:15.554] [bmv2] [D] [thread 10101] [1.0] [cxt 0] Parser 'parser' entering state 'start'
+[22:03:15.554] [bmv2] [D] [thread 10101] [1.0] [cxt 0] Extracting header 'ethernet'
+[22:03:15.555] [bmv2] [D] [thread 10101] [1.0] [cxt 0] Parser state 'start' has no switch, going to default next state
+[22:03:15.555] [bmv2] [T] [thread 10101] [1.0] [cxt 0] Bytes parsed: 14
+[22:03:15.556] [bmv2] [D] [thread 10101] [1.0] [cxt 0] Parser 'parser': end
+[22:03:15.556] [bmv2] [D] [thread 10101] [1.0] [cxt 0] Pipeline 'ingress': start
+[22:03:15.556] [bmv2] [T] [thread 10101] [1.0] [cxt 0] Applying table 'MyIngress.dmac'
+[22:03:15.557] [bmv2] [D] [thread 10101] [1.0] [cxt 0] Looking up key:
+* hdr.ethernet.dstAddr: 00000a000001
+
+[22:03:15.557] [bmv2] [D] [thread 10101] [1.0] [cxt 0] Table 'MyIngress.dmac': hit with handle 0
+[22:03:15.557] [bmv2] [D] [thread 10101] [1.0] [cxt 0] Dumping entry 0
+Match key:
+* hdr.ethernet.dstAddr: EXACT     00000a000001
+Action entry: MyIngress.forward - 1,
+
+[22:03:15.557] [bmv2] [D] [thread 10101] [1.0] [cxt 0] Action entry is MyIngress.forward - 1,
+[22:03:15.558] [bmv2] [T] [thread 10101] [1.0] [cxt 0] Action MyIngress.forward
+[22:03:15.558] [bmv2] [T] [thread 10101] [1.0] [cxt 0] /media/sf_CMPT471/Projects/Project5/simple-switch/program1/p4src/program.p4(66) Primitive standard_metadata.egress_spec = egress_port
+[22:03:15.558] [bmv2] [D] [thread 10101] [1.0] [cxt 0] Pipeline 'ingress': end
+[22:03:15.558] [bmv2] [D] [thread 10101] [1.0] [cxt 0] Egress port is 1
+[22:03:15.559] [bmv2] [D] [thread 10103] [1.0] [cxt 0] Pipeline 'egress': start
+[22:03:15.559] [bmv2] [D] [thread 10103] [1.0] [cxt 0] Pipeline 'egress': end
+[22:03:15.559] [bmv2] [D] [thread 10103] [1.0] [cxt 0] Deparser 'deparser': start
+[22:03:15.559] [bmv2] [D] [thread 10103] [1.0] [cxt 0] Deparsing header 'ethernet'
+[22:03:15.559] [bmv2] [D] [thread 10103] [1.0] [cxt 0] Deparser 'deparser': end
+[22:03:15.560] [bmv2] [D] [thread 10106] [1.0] [cxt 0] Transmitting packet of size 98 out of port 1
