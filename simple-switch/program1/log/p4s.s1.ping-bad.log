@@ -63,3 +63,6 @@ Adding interface s1-eth4 as port 4
 [22:04:27.036] [bmv2] [D] [thread 10402] [2.0] [cxt 0] Deparsing header 'ethernet'
 [22:04:27.036] [bmv2] [D] [thread 10402] [2.0] [cxt 0] Deparser 'deparser': end
 [22:04:27.036] [bmv2] [D] [thread 10406] [2.0] [cxt 0] Transmitting packet of size 98 out of port 0
+open: No such file or directory
+open: No such file or directory
+open: No such file or directory
