@@ -1,0 +1,10 @@
+Obtaining JSON from switch...
+Done
+Control utility for runtime P4 table manipulation
+RuntimeCmd: Error: Invalid table name (ipv4_lpm)
+RuntimeCmd: Error: Invalid table name (ipv4_lpm)
+RuntimeCmd: Error: Invalid table name (ipv4_lpm)
+RuntimeCmd: Error: Invalid table name (ipv4_lpm)
+RuntimeCmd: Error: Invalid table name (signatures)
+RuntimeCmd: Error: Invalid table name (signatures)
+RuntimeCmd: 
