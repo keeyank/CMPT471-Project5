@@ -162,7 +162,7 @@ control IDS_Ingress(inout headers hdr,
 
     action signature_hit(bit<9> egress_port) {
         // TODO: Implement the logic when a pattern is found in a packet
-        // Send Packet to CPU, egress_port is CPU port
+        standard_metadata.egress_spec = egress_port;
 
         // Determine hash value for current flow
         hash(   hash_result, 

@@ -284,7 +284,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateless/p4src/program.p4",
-        "line" : 317,
+        "line" : 313,
         "column" : 8,
         "source_fragment" : "IDS_Deparser"
       },
@@ -407,7 +407,7 @@
       "id" : 3,
       "source_info" : {
         "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateless/p4src/program.p4",
-        "line" : 294,
+        "line" : 290,
         "column" : 8,
         "source_fragment" : "update_checksum( ..."
       },
@@ -628,6 +628,25 @@
         }
       ],
       "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "egress_spec"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 0
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateless/p4src/program.p4",
+            "line" : 165,
+            "column" : 8,
+            "source_fragment" : "standard_metadata.egress_spec = egress_port"
+          }
+        },
         {
           "op" : "modify_field_with_hash_based_offset",
           "parameters" : [
@@ -1081,7 +1100,7 @@
           "id" : 3,
           "source_info" : {
             "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateless/p4src/program.p4",
-            "line" : 272,
+            "line" : 268,
             "column" : 16,
             "source_fragment" : "increment_counter()"
           },
@@ -1136,7 +1155,7 @@
           "id" : 1,
           "source_info" : {
             "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateless/p4src/program.p4",
-            "line" : 266,
+            "line" : 262,
             "column" : 16,
             "source_fragment" : "flow_blocked == (bit<1>)0"
           },
@@ -1162,7 +1181,7 @@
           "id" : 2,
           "source_info" : {
             "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateless/p4src/program.p4",
-            "line" : 268,
+            "line" : 264,
             "column" : 20,
             "source_fragment" : "flow_blocked == (bit<1>)0"
           },
@@ -1190,7 +1209,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateless/p4src/program.p4",
-        "line" : 282,
+        "line" : 278,
         "column" : 8,
         "source_fragment" : "IDS_Egress"
       },
@@ -1206,7 +1225,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateless/p4src/program.p4",
-        "line" : 294,
+        "line" : 290,
         "column" : 8,
         "source_fragment" : "update_checksum( ..."
       },

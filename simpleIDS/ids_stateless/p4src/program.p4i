@@ -1027,7 +1027,7 @@ control IDS_Ingress(inout headers hdr,
 
     action signature_hit(bit<9> egress_port) {
         // TODO: Implement the logic when a pattern is found in a packet
-        // Send Packet to CPU, egress_port is CPU port
+        standard_metadata.egress_spec = egress_port;
 
         // Determine hash value for current flow
         hash( hash_result,
@@ -1120,10 +1120,6 @@ control IDS_Ingress(inout headers hdr,
             //// 2.a Check the signatures table
             //// 2.b If there is a miss, perform IPv4 forwarding
             // 3. If the flow is blocked, increment the corresponding counter and drop the packet         
-
-            // Try making flow_blocked local somehow, and remove setting it in 
-            // signatures action function. Just call flows.apply() again...
-            // Or, just try reading from the flow blocked array, don't even use flow_blocked variable.
 
             flow_blocked = (bit<1>)0;
             hash_result = (bit<32>)0;

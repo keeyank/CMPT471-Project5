@@ -3,7 +3,13 @@
     {
       "name" : "scalars_0",
       "id" : 0,
-      "fields" : []
+      "fields" : [
+        ["tmp_count_0", 32, false],
+        ["flow_blocked_0", 1, false],
+        ["hash_result_0", 32, false],
+        ["curr_sig_0", 40, false],
+        ["_padding_0", 7, false]
+      ]
     },
     {
       "name" : "standard_metadata",
@@ -81,7 +87,9 @@
     {
       "name" : "payload_t",
       "id" : 5,
-      "fields" : []
+      "fields" : [
+        ["data", 8, false]
+      ]
     }
   ],
   "headers" : [
@@ -187,7 +195,76 @@
         {
           "name" : "ipv4",
           "id" : 1,
-          "parser_ops" : [],
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "ipv4"
+                }
+              ],
+              "op" : "extract"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x06",
+              "mask" : null,
+              "next_state" : "tcp"
+            },
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "payload"
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "protocol"]
+            }
+          ]
+        },
+        {
+          "name" : "tcp",
+          "id" : 2,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "tcp"
+                }
+              ],
+              "op" : "extract"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "payload"
+            }
+          ],
+          "transition_key" : []
+        },
+        {
+          "name" : "payload",
+          "id" : 3,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "payload"
+                }
+              ],
+              "op" : "extract"
+            }
+          ],
           "transitions" : [
             {
               "type" : "default",
@@ -207,8 +284,8 @@
       "name" : "deparser",
       "id" : 0,
       "source_info" : {
-        "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateful/p4src/program.p4",
-        "line" : 260,
+        "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+        "line" : 317,
         "column" : 8,
         "source_fragment" : "IDS_Deparser"
       },
@@ -223,22 +300,73 @@
       "name" : "IDS_Ingress.counters",
       "id" : 0,
       "source_info" : {
-        "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateful/p4src/program.p4",
-        "line" : 122,
+        "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+        "line" : 135,
         "column" : 28,
         "source_fragment" : "counters"
       },
       "size" : 4096,
       "bitwidth" : 32
+    },
+    {
+      "name" : "IDS_Ingress.blocked_flows",
+      "id" : 1,
+      "source_info" : {
+        "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+        "line" : 138,
+        "column" : 27,
+        "source_fragment" : "blocked_flows"
+      },
+      "size" : 4096,
+      "bitwidth" : 1
+    },
+    {
+      "name" : "IDS_Ingress.cat_sigs",
+      "id" : 2,
+      "source_info" : {
+        "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+        "line" : 144,
+        "column" : 31,
+        "source_fragment" : "cat_sigs"
+      },
+      "size" : 4096,
+      "bitwidth" : 40
     }
   ],
   "calculations" : [
     {
       "name" : "calc",
       "id" : 0,
+      "algo" : "crc32",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "srcAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dstAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "protocol"]
+        },
+        {
+          "type" : "field",
+          "value" : ["tcp", "srcPort"]
+        },
+        {
+          "type" : "field",
+          "value" : ["tcp", "dstPort"]
+        }
+      ]
+    },
+    {
+      "name" : "calc_0",
+      "id" : 1,
       "source_info" : {
-        "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateful/p4src/program.p4",
-        "line" : 237,
+        "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+        "line" : 294,
         "column" : 8,
         "source_fragment" : "update_checksum( ..."
       },
@@ -292,28 +420,913 @@
     }
   ],
   "learn_lists" : [],
-  "actions" : [],
+  "actions" : [
+    {
+      "name" : "NoAction",
+      "id" : 0,
+      "runtime_data" : [],
+      "primitives" : []
+    },
+    {
+      "name" : "NoAction",
+      "id" : 1,
+      "runtime_data" : [],
+      "primitives" : []
+    },
+    {
+      "name" : "IDS_Ingress.increment_counter",
+      "id" : 2,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_count_0"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "IDS_Ingress.counters"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "hash_result_0"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 149,
+            "column" : 8,
+            "source_fragment" : "counters.read(tmp_count, hash_result)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_count_0"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "tmp_count_0"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x00000001"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 150,
+            "column" : 8,
+            "source_fragment" : "tmp_count = tmp_count + 1"
+          }
+        },
+        {
+          "op" : "register_write",
+          "parameters" : [
+            {
+              "type" : "register_array",
+              "value" : "IDS_Ingress.counters"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "hash_result_0"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_count_0"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 152,
+            "column" : 8,
+            "source_fragment" : "counters.write(hash_result, tmp_count)"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IDS_Ingress.drop",
+      "id" : 3,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "mark_to_drop",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "standard_metadata"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 156,
+            "column" : 8,
+            "source_fragment" : "mark_to_drop(standard_metadata)"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IDS_Ingress.signature_hit",
+      "id" : 4,
+      "runtime_data" : [
+        {
+          "name" : "egress_port",
+          "bitwidth" : 9
+        }
+      ],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "egress_spec"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 0
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 161,
+            "column" : 8,
+            "source_fragment" : "standard_metadata.egress_spec = egress_port"
+          }
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_count_0"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "IDS_Ingress.counters"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "hash_result_0"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 149,
+            "column" : 8,
+            "source_fragment" : "counters.read(tmp_count, hash_result)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_count_0"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "tmp_count_0"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x00000001"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 150,
+            "column" : 8,
+            "source_fragment" : "tmp_count = tmp_count + 1"
+          }
+        },
+        {
+          "op" : "register_write",
+          "parameters" : [
+            {
+              "type" : "register_array",
+              "value" : "IDS_Ingress.counters"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "hash_result_0"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_count_0"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 152,
+            "column" : 8,
+            "source_fragment" : "counters.write(hash_result, tmp_count)"
+          }
+        },
+        {
+          "op" : "register_write",
+          "parameters" : [
+            {
+              "type" : "register_array",
+              "value" : "IDS_Ingress.blocked_flows"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "hash_result_0"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x01"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 163,
+            "column" : 8,
+            "source_fragment" : "blocked_flows.write(hash_result, (bit<1>)1)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "flow_blocked_0"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x01"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 164,
+            "column" : 8,
+            "source_fragment" : "flow_blocked = (bit<1>)1"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IDS_Ingress.get_flow_status",
+      "id" : 5,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "flow_blocked_0"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "IDS_Ingress.blocked_flows"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "hash_result_0"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 170,
+            "column" : 8,
+            "source_fragment" : "blocked_flows.read(flow_blocked, hash_result)"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IDS_Ingress._build_pattern",
+      "id" : 6,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "curr_sig_0"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "IDS_Ingress.cat_sigs"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "hash_result_0"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 175,
+            "column" : 8,
+            "source_fragment" : "cat_sigs.read(curr_sig, hash_result)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "curr_sig_0"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "<<",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "curr_sig_0"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x8"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 177,
+            "column" : 8,
+            "source_fragment" : "curr_sig = curr_sig << 8"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "curr_sig_0"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "curr_sig_0"]
+                      },
+                      "right" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "&",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["payload", "data"]
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xffffffffff"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 178,
+            "column" : 8,
+            "source_fragment" : "curr_sig = curr_sig + (bit<(8*5)>)hdr.payload.data"
+          }
+        },
+        {
+          "op" : "register_write",
+          "parameters" : [
+            {
+              "type" : "register_array",
+              "value" : "IDS_Ingress.cat_sigs"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "hash_result_0"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "curr_sig_0"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 180,
+            "column" : 8,
+            "source_fragment" : "cat_sigs.write(hash_result, (bit<(8*5)>)curr_sig)"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "IDS_Ingress.ipv4_forward",
+      "id" : 7,
+      "runtime_data" : [
+        {
+          "name" : "dstAddr",
+          "bitwidth" : 48
+        },
+        {
+          "name" : "port",
+          "bitwidth" : 9
+        }
+      ],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ethernet", "srcAddr"]
+            },
+            {
+              "type" : "field",
+              "value" : ["ethernet", "dstAddr"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 220,
+            "column" : 8,
+            "source_fragment" : "hdr.ethernet.srcAddr = hdr.ethernet.dstAddr"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ethernet", "dstAddr"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 0
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 223,
+            "column" : 8,
+            "source_fragment" : "hdr.ethernet.dstAddr = dstAddr"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "egress_spec"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 1
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 226,
+            "column" : 8,
+            "source_fragment" : "standard_metadata.egress_spec = port"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "ttl"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["ipv4", "ttl"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xff"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 229,
+            "column" : 8,
+            "source_fragment" : "hdr.ipv4.ttl = hdr.ipv4.ttl -1"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "program256",
+      "id" : 8,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "hash_result_0"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x0000"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00001000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 256,
+            "column" : 12,
+            "source_fragment" : "hash( hash_result, ..."
+          }
+        }
+      ]
+    }
+  ],
   "pipelines" : [
     {
       "name" : "ingress",
       "id" : 0,
       "source_info" : {
-        "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateful/p4src/program.p4",
-        "line" : 118,
+        "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+        "line" : 131,
         "column" : 8,
         "source_fragment" : "IDS_Ingress"
       },
-      "init_table" : null,
-      "tables" : [],
+      "init_table" : "node_2",
+      "tables" : [
+        {
+          "name" : "tbl_program256",
+          "id" : 0,
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 256,
+            "column" : 12,
+            "source_fragment" : "hash( hash_result, ..."
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [8],
+          "actions" : ["program256"],
+          "base_default_next" : "IDS_Ingress.flows",
+          "next_tables" : {
+            "program256" : "IDS_Ingress.flows"
+          },
+          "default_entry" : {
+            "action_id" : 8,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "IDS_Ingress.flows",
+          "id" : 1,
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 194,
+            "column" : 10,
+            "source_fragment" : "flows"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [5],
+          "actions" : ["IDS_Ingress.get_flow_status"],
+          "base_default_next" : "node_5",
+          "next_tables" : {
+            "IDS_Ingress.get_flow_status" : "node_5"
+          },
+          "default_entry" : {
+            "action_id" : 5,
+            "action_const" : false,
+            "action_data" : [],
+            "action_entry_const" : false
+          }
+        },
+        {
+          "name" : "IDS_Ingress.build_pattern",
+          "id" : 2,
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 184,
+            "column" : 10,
+            "source_fragment" : "build_pattern"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [6],
+          "actions" : ["IDS_Ingress._build_pattern"],
+          "base_default_next" : "IDS_Ingress.signatures",
+          "next_tables" : {
+            "IDS_Ingress._build_pattern" : "IDS_Ingress.signatures"
+          },
+          "default_entry" : {
+            "action_id" : 6,
+            "action_const" : false,
+            "action_data" : [],
+            "action_entry_const" : false
+          }
+        },
+        {
+          "name" : "IDS_Ingress.signatures",
+          "id" : 3,
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 203,
+            "column" : 10,
+            "source_fragment" : "signatures"
+          },
+          "key" : [
+            {
+              "match_type" : "exact",
+              "name" : "curr_sig",
+              "target" : ["scalars", "curr_sig_0"],
+              "mask" : null
+            }
+          ],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [4, 0],
+          "actions" : ["IDS_Ingress.signature_hit", "NoAction"],
+          "base_default_next" : "node_8",
+          "next_tables" : {
+            "IDS_Ingress.signature_hit" : "node_8",
+            "NoAction" : "node_8"
+          },
+          "default_entry" : {
+            "action_id" : 0,
+            "action_const" : false,
+            "action_data" : [],
+            "action_entry_const" : false
+          }
+        },
+        {
+          "name" : "IDS_Ingress.ipv4_lpm",
+          "id" : 4,
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 232,
+            "column" : 10,
+            "source_fragment" : "ipv4_lpm"
+          },
+          "key" : [
+            {
+              "match_type" : "lpm",
+              "name" : "hdr.ipv4.dstAddr",
+              "target" : ["ipv4", "dstAddr"],
+              "mask" : null
+            }
+          ],
+          "match_type" : "lpm",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [7, 3, 1],
+          "actions" : ["IDS_Ingress.ipv4_forward", "IDS_Ingress.drop", "NoAction"],
+          "base_default_next" : null,
+          "next_tables" : {
+            "IDS_Ingress.ipv4_forward" : null,
+            "IDS_Ingress.drop" : null,
+            "NoAction" : null
+          },
+          "default_entry" : {
+            "action_id" : 1,
+            "action_const" : false,
+            "action_data" : [],
+            "action_entry_const" : false
+          }
+        },
+        {
+          "name" : "tbl_increment_counter",
+          "id" : 5,
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 272,
+            "column" : 16,
+            "source_fragment" : "increment_counter()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [2],
+          "actions" : ["IDS_Ingress.increment_counter"],
+          "base_default_next" : null,
+          "next_tables" : {
+            "IDS_Ingress.increment_counter" : null
+          },
+          "default_entry" : {
+            "action_id" : 2,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        }
+      ],
       "action_profiles" : [],
-      "conditionals" : []
+      "conditionals" : [
+        {
+          "name" : "node_2",
+          "id" : 0,
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 246,
+            "column" : 12,
+            "source_fragment" : "hdr.ipv4.isValid()"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "d2b",
+              "left" : null,
+              "right" : {
+                "type" : "field",
+                "value" : ["ipv4", "$valid$"]
+              }
+            }
+          },
+          "false_next" : null,
+          "true_next" : "tbl_program256"
+        },
+        {
+          "name" : "node_5",
+          "id" : 1,
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 265,
+            "column" : 16,
+            "source_fragment" : "flow_blocked == (bit<1>)0"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "==",
+              "left" : {
+                "type" : "field",
+                "value" : ["scalars", "flow_blocked_0"]
+              },
+              "right" : {
+                "type" : "hexstr",
+                "value" : "0x00"
+              }
+            }
+          },
+          "true_next" : "IDS_Ingress.build_pattern",
+          "false_next" : "tbl_increment_counter"
+        },
+        {
+          "name" : "node_8",
+          "id" : 2,
+          "source_info" : {
+            "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+            "line" : 268,
+            "column" : 20,
+            "source_fragment" : "flow_blocked == (bit<1>)0"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "==",
+              "left" : {
+                "type" : "field",
+                "value" : ["scalars", "flow_blocked_0"]
+              },
+              "right" : {
+                "type" : "hexstr",
+                "value" : "0x00"
+              }
+            }
+          },
+          "false_next" : null,
+          "true_next" : "IDS_Ingress.ipv4_lpm"
+        }
+      ]
     },
     {
       "name" : "egress",
       "id" : 1,
       "source_info" : {
-        "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateful/p4src/program.p4",
-        "line" : 225,
+        "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+        "line" : 282,
         "column" : 8,
         "source_fragment" : "IDS_Egress"
       },
@@ -328,14 +1341,14 @@
       "name" : "cksum",
       "id" : 0,
       "source_info" : {
-        "filename" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateful/p4src/program.p4",
-        "line" : 237,
+        "filename" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4",
+        "line" : 294,
         "column" : 8,
         "source_fragment" : "update_checksum( ..."
       },
       "target" : ["ipv4", "hdrChecksum"],
       "type" : "generic",
-      "calculation" : "calc",
+      "calculation" : "calc_0",
       "verify" : false,
       "update" : true,
       "if_cond" : {
@@ -391,7 +1404,7 @@
       ["standard_metadata", "priority"]
     ]
   ],
-  "program" : "/media/sf_CMPT471/Projects/Project5/simpleIDS/ids_stateful/p4src/program.p4i",
+  "program" : "/media/sf_Project5/simpleIDS/ids_stateful/p4src/program.p4i",
   "__meta__" : {
     "version" : [2, 23],
     "compiler" : "https://github.com/p4lang/p4c"

@@ -23,7 +23,7 @@ net.addLink('s1', 'h4')
 net.l2()
 
 # Nodes general options
-net.disablePcapDumpAll()
-net.disableLogAll()
+net.enablePcapDumpAll()
+net.enableLogAll()
 net.enableCli()
 net.startNetwork()

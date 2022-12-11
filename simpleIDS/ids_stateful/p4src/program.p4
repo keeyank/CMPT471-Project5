@@ -6,7 +6,7 @@ const bit<16> TYPE_IPV4 = 0x800;
 const bit<8>  TYPE_TCP  = 6;
 
 #define FLOW_ENTRIES 4096
-#define PATTERN_WIDTH 32
+#define PATTERN_WIDTH 8
 #define FLOW_PKT_THRESHOLD 5
 #define FLOW_BIT_WIDTH (PATTERN_WIDTH*FLOW_PKT_THRESHOLD)
 
@@ -61,7 +61,7 @@ header tcp_t{
 
 header payload_t {
     // TODO: fill in
-    bit<2048> data; // TODO: 2048 may not be enough for payloads!!!
+    bit<PATTERN_WIDTH> data; 
 }
 
 struct metadata {
@@ -95,10 +95,22 @@ parser IDS_Parser(packet_in packet,
 
     state ipv4 {
         // TODO: implement the IPv4 Parser
+        packet.extract(hdr.ipv4);
+        transition select(hdr.ipv4.protocol){
+            TYPE_TCP: tcp;
+            default: payload;
+        }
     }
 
     state tcp {
        // TODO: implement the TCP Parser
+        packet.extract(hdr.tcp);
+        transition payload;
+    }
+
+    state payload {
+        packet.extract(hdr.payload);
+        transition accept;
     }
 }
 
@@ -123,9 +135,21 @@ control IDS_Ingress(inout headers hdr,
     register<bit<32>>(FLOW_ENTRIES) counters;
 
     // TODO: Fill in any P4 variables/registeres needed by this control
+    register<bit<1>>(FLOW_ENTRIES) blocked_flows; 
+    bit<32> tmp_count;
+    bit<1> flow_blocked; 
+    bit<32> hash_result;
+
+    // For concatenated data storage (for signature comparison)
+    register<bit<FLOW_BIT_WIDTH>>(FLOW_ENTRIES) cat_sigs;
+    bit<FLOW_BIT_WIDTH> curr_sig;
 
     action increment_counter() {
         // TODO: increment the corresponding flow counter
+        counters.read(tmp_count, hash_result);
+        tmp_count = tmp_count + 1;
+        //log_msg("Incrementing count...");
+        counters.write(hash_result, tmp_count);
     }
 
     action drop() {
@@ -134,15 +158,26 @@ control IDS_Ingress(inout headers hdr,
 
     action signature_hit(bit<9> egress_port) {
         // TODO: Implement the logic when a pattern is found in across consecutive FLOW_PKT_THRESHOLD packets
+        standard_metadata.egress_spec = egress_port;
+        increment_counter();
+        blocked_flows.write(hash_result, (bit<1>)1);
+        flow_blocked = (bit<1>)1;
     }
 
     action get_flow_status() {
         // TODO: Calculate the index in register array corresponding to this flow
         // TODO: Read from a register whether the flow is blocked
+        blocked_flows.read(flow_blocked, hash_result);
     }
 
     action _build_pattern() {
         // TODO: Implement the logic to build/concatenate a pattern from the first PATTERN_WIDTH bits in the TCP payload.
+        cat_sigs.read(curr_sig, hash_result);
+
+        curr_sig = curr_sig << PATTERN_WIDTH;
+        curr_sig = curr_sig + (bit<FLOW_BIT_WIDTH>)hdr.payload.data;
+
+        cat_sigs.write(hash_result, (bit<FLOW_BIT_WIDTH>)curr_sig);
     }
 
     // `build_pattern` is a keyless table used to execute a single action: _build_pattern().
@@ -168,6 +203,7 @@ control IDS_Ingress(inout headers hdr,
     table signatures {
          key = {
             // TODO: fill in the key field
+            curr_sig: exact;
         }
 
         actions = {
@@ -215,6 +251,26 @@ control IDS_Ingress(inout headers hdr,
             //// 2.b Check the signatures table
             //// 2.c If there is a miss, perform IPv4 forwarding
             // 3. If the flow is blocked, increment the corresponding counter and drop the packet       
+            
+            // Get index for current flow
+            hash(   hash_result, 
+                    HashAlgorithm.crc32, 
+                    (bit<16>)0, 
+                    {  hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, hdr.ipv4.protocol,
+                        hdr.tcp.srcPort, hdr.tcp.dstPort },
+                    (bit<32>)FLOW_ENTRIES);
+
+            flow_blocked = (bit<1>)0;   
+            flows.apply();      
+            if (flow_blocked == (bit<1>)0) {
+                build_pattern.apply();
+                signatures.apply();
+                if (flow_blocked == (bit<1>)0) {
+                    ipv4_lpm.apply();   
+                }
+            } else {
+                increment_counter();
+            }        
         }
     }
 }
